@@ -23,14 +23,14 @@ $(function() {
 
         js_res.forEach(element => {
             _templ += `<tr>
-            <td>${element.id}<td>
-            <td>${element.name}<td>
-            <td>${element.description}<td>
+            <td>${element.id}</td>
+            <td>${element.name}</td>
+            <td>${element.description}</td>
             </tr>`;
             // console.log(element);
         });
-        console.log(_templ);
-        $('#container').html(_templ);
+        // console.log(_templ);
+        $('#tb-tareas').html(_templ);
 
     }
 
@@ -68,8 +68,8 @@ $(function() {
         url:'task-list.php',
         type: 'GET',
         success: function(res) {
-            console.log(res);
-            // mostrar_tareas(res);
+            // console.log(res);
+            mostrar_tareas(res);
         }
     })
 });
