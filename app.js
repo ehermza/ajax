@@ -2,24 +2,6 @@ $(function()
 {
     listarTareasTodas();
 
-    function mostrar_coincidencias(res)
-    {
-        // console.log(res);
-        // return;
-        let js_res= JSON.parse(res);
-        let _templ = "";
-
-        js_res.forEach(element => {
-            _templ += `<li>${element.name}</li>`;
-            // console.log(element);
-        });
-        console.log(_templ);
-        $('#container').html(_templ);
-
-    }
-    function borrar(id) {
-        console.log(id);
-    }
 
     function get_tareas(res)
     {
@@ -29,7 +11,7 @@ $(function()
         js_res.forEach(element => {
             _templ += `<tr>
             <td>${element.id}</td>
-            <td>${element.name}</td>
+            <td><a href="#" id=${element.id} class="link-name"> ${element.name}</td>
             <td>${element.description}</td>
             <td><button id=${element.id} class="btn bt-borrar btn-danger">
                 DELETE
@@ -51,7 +33,22 @@ $(function()
         })
     
     }
+    
+    function mostrar_coincidencias(res)
+    {
+        // console.log(res);
+        // return;
+        let js_res= JSON.parse(res);
+        let _templ = "";
 
+        js_res.forEach(element => {
+            _templ += `<li>${element.name}</li>`;
+            // console.log(element);
+        });
+        console.log(_templ);
+        $('#container').html(_templ);
+
+    }
     $('#search').keyup(function() {
         let strbuscar= (this.value);    //OK
         if(!strbuscar) 
@@ -83,9 +80,10 @@ $(function()
         });
     });
 
-    $(document).on('click', '.bt-borrar', (e)=>{
+    $(document).on('click', '.bt-borrar', (e)=>
+    {
         let objeto= e.target;
-        console.log(objeto.id);
+        // console.log(objeto.id);
         if(objeto.id==null)
             return;
         $.post('task-delete.php', {idtask: objeto.id}, function(res){
@@ -93,6 +91,23 @@ $(function()
             listarTareasTodas();            
 
         });
-    })
-});
+    });
 
+    $(document).on('click', '.link-name', (e) => {
+        let ide = e.target.id;
+        // console.log(e.target);
+        if (ide == null)
+            return;
+
+        let objeto = {};
+        $.post('task-getone.php', { idtask: ide }, function (res) 
+        {
+            // console.log(res);
+            let element = JSON.parse(res);
+            console.log(element);
+            $('#taskId').val(element.id);
+            $('#name').val(element.name);
+            $('#description').val(element.description);
+        });
+    });
+});
