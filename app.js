@@ -1,5 +1,7 @@
-$(function() {
-    
+$(function() 
+{
+    listarTareasTodas();
+
     function mostrar_coincidencias(res)
     {
         // console.log(res);
@@ -15,8 +17,11 @@ $(function() {
         $('#container').html(_templ);
 
     }
+    function borrar(id) {
+        console.log(id);
+    }
 
-    function mostrar_tareas(res)
+    function get_tareas(res)
     {
         let js_res= JSON.parse(res);
         let _templ = "";
@@ -26,12 +31,25 @@ $(function() {
             <td>${element.id}</td>
             <td>${element.name}</td>
             <td>${element.description}</td>
+            <td><button id=${element.id} class="btn bt-borrar btn-danger">
+                DELETE
+                </button></td>
             </tr>`;
-            // console.log(element);
         });
         // console.log(_templ);
         $('#tb-tareas').html(_templ);
 
+    }
+    function listarTareasTodas(){
+        $.ajax({
+            url:'task-list.php',
+            type: 'GET',
+            success: function(res) {
+                // console.log(res);
+                get_tareas(res);
+            }
+        })
+    
     }
 
     $('#search').keyup(function() {
@@ -60,17 +78,21 @@ $(function() {
         }
         $.post('task-add.php', objeto, function(res){
             console.log(res);
+            listarTareasTodas();            
             $('#tarea-form').trigger('reset');
         });
     });
 
-    $.ajax({
-        url:'task-list.php',
-        type: 'GET',
-        success: function(res) {
-            // console.log(res);
-            mostrar_tareas(res);
-        }
+    $(document).on('click', '.bt-borrar', (e)=>{
+        let objeto= e.target;
+        console.log(objeto.id);
+        if(objeto.id==null)
+            return;
+        $.post('task-delete.php', {idtask: objeto.id}, function(res){
+            console.log(res);
+            listarTareasTodas();            
+
+        });
     })
 });
 
